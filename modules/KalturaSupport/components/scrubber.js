@@ -394,6 +394,7 @@
 			this.getComponent().find(".sliderPreview").hide();
 		},
 		getSliderConfig: function () {
+			console.log(">>>"+ " getSliderConfig ")
 			var _this = this;
 			var embedPlayer = this.getPlayer();
 			var alreadyChanged = false;
@@ -417,11 +418,13 @@
 				change: function (event, ui) {
 					alreadyChanged = true;
 					var seekTime = (ui.value / 1000) * embedPlayer.getDuration();
+					console.log(">>>"+ " seekTime " + seekTime)
 					// always update the title
 					_this.updateAttr(ui);
 					// Only run the onChange event if done by a user slide
 					// (otherwise it runs times it should not)
 					if (embedPlayer.userSlide) {
+						console.log(">>>"+ " userInitiatedSeek " + seekTime)
 						embedPlayer.userSlide = false;
 						embedPlayer.seeking = true;
 						embedPlayer.triggerHelper("userInitiatedSeek", seekTime);

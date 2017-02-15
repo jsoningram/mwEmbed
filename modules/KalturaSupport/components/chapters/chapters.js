@@ -971,6 +971,7 @@
 		//UI Handlers
 		mediaClicked: function (mediaIndex) {
 			//Only apply seek in VOD or in live if DVR is supported
+            // console.log(">>>> mediaClicked")
 			if ((this.getPlayer().isLive() && this.getPlayer().isDVR()) ||
 					!this.getPlayer().isLive()) {
 				//Send play request on first click for devices that don't have autoplay, e.g. mobile devices
@@ -978,7 +979,20 @@
 					this.getPlayer().sendNotification('doPlay');
 				}
 				// see to start time and play ( +.1 to avoid highlight of prev chapter )
-				this.getPlayer().sendNotification('doSeek', ( this.mediaList[mediaIndex].startTime ) + 0.1);
+				// debugger;
+				// Original code
+				// this.getPlayer().sendNotification('doSeek', ( this.mediaList[mediaIndex].startTime ) + 0.1);
+            	// debugger
+
+				var now = new Date().getTime();
+                var seekTo = (now/1000)-this.mediaList[mediaIndex].startTime
+            	mw.log(">>>> seekTo : ",seekTo);
+				this.getPlayer().sendNotification('doSeek', ( seekTo));
+
+
+
+
+
 			}
 		},
 		doOnScrollerUpdate: function(data){
