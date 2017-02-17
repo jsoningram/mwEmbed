@@ -418,7 +418,6 @@
 				change: function (event, ui) {
 					alreadyChanged = true;
 					var seekTime = (ui.value / 1000) * embedPlayer.getDuration();
-					console.log(">>>"+ " seekTime " + seekTime)
 					// always update the title
 					_this.updateAttr(ui);
 					// Only run the onChange event if done by a user slide

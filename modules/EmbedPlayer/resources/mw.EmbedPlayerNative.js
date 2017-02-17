@@ -1441,7 +1441,9 @@
 					} else {
 						id3Tag = JSON.parse(this.activeCues[0].value.data);
 					}
-					_this.triggerHelper('onId3Tag', id3Tag);
+                    mw.log(">>>",id3Tag);
+
+                    _this.triggerHelper('onId3Tag', id3Tag);
                 }
                 catch (e) {
                     mw.log("Native player :: id3Tag :: ERROR :: "+e);

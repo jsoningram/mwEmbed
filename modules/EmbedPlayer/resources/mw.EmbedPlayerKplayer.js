@@ -821,6 +821,7 @@
 			var id3TagString = id3TagData.substring(id3TagData.indexOf("{"), id3TagData.lastIndexOf("}")+1);
 			//Parse JSON
 			var id3Tag = JSON.parse(id3TagString);
+			mw.log(">>>",id3Tag)
 
             this.triggerHelper('onId3Tag', id3Tag);
         },

@@ -982,11 +982,8 @@
 				// debugger;
 				// Original code
 				// this.getPlayer().sendNotification('doSeek', ( this.mediaList[mediaIndex].startTime ) + 0.1);
-            	// debugger
-
-				var now = new Date().getTime();
-                var seekTo = (now/1000)-this.mediaList[mediaIndex].startTime
-            	mw.log(">>>> seekTo : ",seekTo);
+				var now = new Date().getTime()/1000;
+                var seekTo = this.embedPlayer.getDuration()+this.mediaList[mediaIndex].startTime-now;
 				this.getPlayer().sendNotification('doSeek', ( seekTo));
 
 
