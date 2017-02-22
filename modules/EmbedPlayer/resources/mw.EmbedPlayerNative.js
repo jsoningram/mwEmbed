@@ -1441,8 +1441,6 @@
 					} else {
 						id3Tag = JSON.parse(this.activeCues[0].value.data);
 					}
-                    mw.log(">>>",id3Tag);
-
                     _this.triggerHelper('onId3Tag', id3Tag);
                 }
                 catch (e) {
