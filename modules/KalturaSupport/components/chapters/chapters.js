@@ -982,10 +982,23 @@
 				// debugger;
 				// Original code
 				// this.getPlayer().sendNotification('doSeek', ( this.mediaList[mediaIndex].startTime ) + 0.1);
-				var now = new Date().getTime()/1000;
-                var seekTo = this.embedPlayer.getDuration()+this.mediaList[mediaIndex].startTime-now;
+
+				//var now = new Date().getTime()/1000;
+                // var seekTo = this.embedPlayer.getDuration()+this.mediaList[mediaIndex].startTime-now;
+                var seekTo =  this.mediaList[mediaIndex].startTime-this.embedPlayer.evaluate( '{mediaProxy.entry.firstBroadcast}');
 				this.getPlayer().sendNotification('doSeek', ( seekTo));
 
+				mw.log(">>> ",seekTo);
+				mw.log(">>> ",this.embedPlayer.getDuration()+this.mediaList[mediaIndex].startTime-now);
+				// mw.log(">>> currentBroadcastStartTime",this.embedPlayer.evaluate( '{mediaProxy.entry.currentBroadcastStartTime}'));
+				// mw.log(">>> firstBroadcast",this.embedPlayer.evaluate( '{mediaProxy.entry.firstBroadcast}'));
+				// mw.log(">>> lastBroadcast",this.embedPlayer.evaluate( '{mediaProxy.entry.lastBroadcast}'));
+				// mw.log(">>> ");
+				// mw.log(">>> CALC",seekTo);
+				// mw.log(">>> CALC1",this.embedPlayer.evaluate( '{mediaProxy.entry.firstBroadcast}') - this.mediaList[mediaIndex].startTime);
+				// mw.log(">>> CALC2",this.embedPlayer.evaluate( '{mediaProxy.entry.lastBroadcast}') - this.mediaList[mediaIndex].startTime);
+				// mw.log(">>> CALC3",this.embedPlayer.evaluate( '{mediaProxy.entry.currentBroadcastStartTime}') - this.mediaList[mediaIndex].startTime);
+				// mw.log(">>> ");
 
 
 
