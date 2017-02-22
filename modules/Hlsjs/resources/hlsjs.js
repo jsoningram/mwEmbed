@@ -715,8 +715,6 @@
 				this.getPlayer().triggerHelper(e.type, e);
 				var time = Math.round(e.currentTarget.currentTime);
 				if (this.ptsID3Data[time]){
-                    mw.log(">>>",this.ptsID3Data[time]);
-
                     this.getPlayer().triggerHelper('onId3Tag', this.ptsID3Data[time]);
 				}
 			},
