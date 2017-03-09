@@ -520,7 +520,7 @@
 				this.stop();
 				return false;
 			}
-			if( this.isLive() && !this.isDVR() ){
+			if( this.isLive() ){
                 return this.LiveCurrentTime ? this.LiveCurrentTime : 0;
             }
 			var ct = this.playerElement.currentTime;

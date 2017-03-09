@@ -978,11 +978,34 @@
 			if ((this.getPlayer().isLive() && this.getPlayer().isDVR()) ||
 					!this.getPlayer().isLive()) {
 				//Send play request on first click for devices that don't have autoplay, e.g. mobile devices
-				if (!this.getPlayer().canAutoPlay() && this.getPlayer().firstPlay){
-					this.getPlayer().sendNotification('doPlay');
-				}
+				// if (!this.getPlayer().canAutoPlay() && this.getPlayer().firstPlay){
+				// 	this.getPlayer().sendNotification('doPlay');
+				// }
 				// see to start time and play ( +.1 to avoid highlight of prev chapter )
-				this.getPlayer().sendNotification('doSeek', ( this.mediaList[mediaIndex].startTime ) + 0.1);
+				// this.getPlayer().sendNotification('doSeek', ( this.mediaList[mediaIndex].startTime ) + 0.1);
+				// debugger;
+				// Original code
+				// this.getPlayer().sendNotification('doSeek', ( this.mediaList[mediaIndex].startTime ) + 0.1);
+				// this.getPlayer().setLiveOffSynch(false);
+				// this.getPlayer().sendNotification('liveStreamStatusUpdate', false);
+				// var now = new Date().getTime()/1000;
+				// var seekTo = this.embedPlayer.getDuration()-(this.embedPlayer.currentTime-this.mediaList[mediaIndex].startTime);
+				var seekTo =  this.mediaList[mediaIndex].startTime-this.embedPlayer.evaluate( '{mediaProxy.entry.firstBroadcast}');
+				if (seekTo > 0) {
+					this.getPlayer().sendNotification('doSeek', ( seekTo + 0.1));
+				}
+
+				mw.log(">>> ",seekTo);
+				// mw.log(">>> ",this.embedPlayer.getDuration()+this.mediaList[mediaIndex].startTime-now);
+				// mw.log(">>> currentBroadcastStartTime",this.embedPlayer.evaluate( '{mediaProxy.entry.currentBroadcastStartTime}'));
+				// mw.log(">>> firstBroadcast",this.embedPlayer.evaluate( '{mediaProxy.entry.firstBroadcast}'));
+				// mw.log(">>> lastBroadcast",this.embedPlayer.evaluate( '{mediaProxy.entry.lastBroadcast}'));
+				// mw.log(">>> ");
+				// mw.log(">>> CALC",seekTo);
+				// mw.log(">>> CALC1",this.embedPlayer.evaluate( '{mediaProxy.entry.firstBroadcast}') - this.mediaList[mediaIndex].startTime);
+				// mw.log(">>> CALC2",this.embedPlayer.evaluate( '{mediaProxy.entry.lastBroadcast}') - this.mediaList[mediaIndex].startTime);
+				// mw.log(">>> CALC3",this.embedPlayer.evaluate( '{mediaProxy.entry.currentBroadcastStartTime}') - this.mediaList[mediaIndex].startTime);
+				// mw.log(">>> ");
 			}
 		},
 		doOnScrollerUpdate: function(data){
