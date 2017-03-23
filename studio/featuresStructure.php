@@ -200,6 +200,7 @@ return array(
 		"children"=> array(
 			/*"chaptersView" => "",*/
 			"keyboardShortcuts" => "",
+			"actionButtons" => "",
 			"moderation" => "",
 			"playbackRateSelector" => "",
 			"restrictUserAgent" => "",

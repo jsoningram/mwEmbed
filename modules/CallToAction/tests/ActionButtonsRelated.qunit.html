@@ -53,25 +53,34 @@ function jsKalturaPlayerTest( videoId ){
 <script>
 	kWidget.featureConfig({
 		'targetId': 'kdp',
-		'wid': '_811441',
-		'uiconf_id' : '11824841',
-		'entry_id' : '1_3fxkoyn2',
+		'wid': '_27017',
+		'uiconf_id' : '38778581',
+		'entry_id' : '1_6l2aslet',
 		'flashvars': {
+			actions: {
+				"button1": {
+					"label": "button1",
+					"labelMetadataField": "Button1label",
+					"url": "http://www.kaltura.com",
+					"urlMetadataField": "Button1url"
+				},
+				"button2": {
+					"label": "button2",
+					"labelMetadataField": "Button2label",
+					"url": "http://player.kaltura.com",
+					"urlMetadataField": "Button2url"
+				}
+			},
 			'actionButtons': {
 				plugin: true,
-				displayOn: 'related',
-				customDataKey: 'x',
-				actions: [
-					{"id": "product", "label": "Buy this Product", "url": "http://www.myproduct.com"},
-					{"id": "product2", "label": "Read more about this Product", "url": "http://www.myproduct.com"}
-				],
-				templatePath: '../CallToAction/templates/action-button-related.tmpl.html'		
+				displayOnRelated: true,
+				templatePath: '../CallToAction/templates/action-button-related.tmpl.html'
 			},
 			'related': {
 				plugin: true,
 				itemsLimit: 5
 			},
-			'metadataProfileId': 3416131
+			'metadataProfileId': 8644902
 		}
 	});
 </script>

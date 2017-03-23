@@ -1,5 +1,9 @@
-<% $.each(actions, function(idx, action){ %>
-<div class="item cta-50">
-	<a class="cta-button" href="<%=action.url%>" data-id="<%=action.id%>" data-click="gotoAction"><%=action.label%></a>
+<div class="ctaContainer">
+	<% $.each(actions, function(idx, action){ %>
+	<div class="item cta-50">
+		<a class="cta-button"
+		   href="<%=action.url%>"
+		   data-click="gotoAction"><%=action.label%></a>
+	</div>
+	<% }); %>
 </div>
-<% }); %>

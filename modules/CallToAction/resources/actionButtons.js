@@ -3,61 +3,118 @@
 mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 
 	defaultConfig: {
-		displayOn: "end", // Can be either "end" or "related"
-		customDataKey: "ActionButtons", 
+		displayOnRelated: true,
+		displayTime: "end",
 		openInNewWindow: true,
-		actions: [],
+		styles: {
+			"bgColor": "#432ae7",
+			"bgHoverColor": "#009E49",
+			"textColor": "#ffffff",
+			"textSize": "18px",
+			"fontFamily": "Arial, Roboto, Arial Unicode Ms, Helvetica, Verdana, PT Sans Caption, sans-serif"
+		},
+		actions: {
+			"button1": {
+				"label": "button1",
+				"labelMetadataField": "Button1label",
+				"url": "http://www.kaltura.com",
+				"urlMetadataField": "Button1url"
+			},
+			"button2": {
+				"label": "button2",
+				"labelMetadataField": "Button2label",
+				"url": "http://player.kaltura.com",
+				"urlMetadataField": "Button2url"
+			}
+		},
 		templatePath: '../CallToAction/templates/action-buttons.tmpl.html'
 	},
 
 	setup: function() {
 
 		// Handle custom configuration from entry custom data
-		this.handleCustomConfig();
+		this.bind('KalturaSupport_EntryDataReady', $.proxy(function () {
+			this.setActionsConfiguration();
+		}, this));
 
-		this.log('Setup -- displayOn: ' + this.getConfig('displayOn'));
-		// Show screen at right time
-		switch( this.getConfig('displayOn') ) {
-			case 'end':
-				this.bind('onEndedDone', $.proxy(function(){
+		// Handle button styles for cta screen
+		this.bind('preShowScreen', $.proxy(function(e, screenPluginName){
+			if( screenPluginName === 'actionButtons' ) {
+				this.getScreen().then($.proxy(function () {
+					// Handle button styles
+					this.setStyles();
+				}, this));
+			}
+		}, this));
+
+		// Check if we should add cta to related
+		if ( this.getConfig('displayOnRelated') ) {
+			this.bind('showScreen', $.proxy(function(e, screenPluginName){
+				if( screenPluginName === 'related' ) {
+					var $spans = this.getPlayer().getVideoHolder()
+								.find('.related > .screen-content')
+								.find('span');
+
+					this.getTemplateHTML(this.getTemplateData())
+						.then($.proxy(function (htmlMarkup) {
+							$spans.eq(1).after(htmlMarkup);
+							// Handle button styles for cta with related
+							this.setStyles();
+					},this));
+				}
+			}, this));
+		}
+
+		// Handle screen display timing
+		if ( this.getConfig('displayTime' ) == "end") {
+			this.bind('onEndedDone', $.proxy(function(){
+				if (!this.getConfig('displayOnRelated')) {
 					this.showScreen();
-				}, this));
-				break;
-			case 'related':
-				this.bind('showScreen', $.proxy(function(e, screenPluginName){
-					if( screenPluginName === 'related' ) {
-						var $spans = this.getPlayer().getVideoHolder().find('.related > .screen-content').find('span');
-						if( $spans.length > 1 ) {
-							$spans.eq(1).remove();
-						}
-						this.getTemplateHTML(this.getTemplateData())
-							.then(function(htmlMarkup) {
-								$spans.eq(0).after(htmlMarkup);
-							}, function(msg) {
-								mw.log( msg );
-							});
-					}
-				}, this));
-				break;
+				}
+			}, this));
+		} else {
+			this.bind('timeupdate', $.proxy(function(){
+				if( Math.floor(this.getPlayer().currentTime) == this.getConfig('displayTime') ){
+					this.showScreen();
+				}
+			}, this));
 		}
 	},
 
-	handleCustomConfig: function() {
-		// Check if the entry has custom configuration
-		var customConfig = {};
-		if( this.getPlayer().kalturaEntryMetaData[ this.getConfig('customDataKey') ] ) {
-			try {
-				customConfig = JSON.parse( this.getPlayer().kalturaEntryMetaData[ this.getConfig('customDataKey') ] );
-			} catch (e) {}
-		}
+	setStyles: function () {
+		var styles = this.getConfig('styles');
+		this.getPlayer().getInterface().find(".cta-button").css({
+			'background-color': styles.bgColor,
+			'color': styles.textColor,
+			'font-size': styles.textSize,
+			'font-family': styles.fontFamily
+		}).hover(function (e) {
+			$(this).css('background-color', e.type === "mouseenter" ? styles.bgHoverColor : styles.bgColor )
+		});
+	},
 
-		// Merge in any custom configuration from entry custom data
-		if( $.isPlainObject(customConfig) && !$.isEmptyObject(customConfig) ) {
-			$.each(customConfig, $.proxy(function( key, val ){
-				this.log('Set custom config "' + key + '": ' + val);
-				this.setConfig( key, val );
-			}, this));
+	setActionsConfiguration: function () {
+		if ( this.getPlayer().getFlashvars()["actions"] ){
+			this.setConfig('actions', this.getPlayer().getFlashvars().actions)
+		} else if ( this.getPlayer().kalturaEntryMetaData ) {
+			this.setMetadataConfig();
 		}
+	},
+
+	setMetadataConfig: function() {
+		// Check if the entry has custom configuration
+		var customConfig = this.getPlayer().kalturaEntryMetaData;
+		var actions = this.getConfig('actions');
+		var updatedConfig = {};
+
+		$.each(actions, $.proxy(function( key, val ){
+			updatedConfig[key] = {
+				"label": customConfig[val["labelMetadataField"]],
+				"url": customConfig[val["urlMetadataField"]]
+			};
+		}, this));
+
+		this.setConfig('actions', updatedConfig)
 	},
 
 	getTemplateData: function() {
@@ -69,7 +126,6 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 	gotoAction: function(e, data) {
 		var $a = $(e.target),
 			data = {
-				id: data.id,
 				label: $a.text(),
 				url: $a.attr('href')
 			};
