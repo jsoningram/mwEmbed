@@ -17,6 +17,21 @@
         "value": "string",
         "initvalue": "end"
       },
+      "displayTimeMetadataField": {
+        "doc": "The metadata field name from your custom schema for display time",
+        "value": "string",
+        "initvalue": ""
+      },
+      "title": {
+        "doc": "The call to actions title",
+        "value": "string",
+        "initvalue": "Actions buttons"
+      },
+      "titleMetadataField": {
+        "doc": "The metadata field name from your custom schema for the title",
+        "value": "string",
+        "initvalue": ""
+      },
       "actions": {
         "doc": "<p style='text-align: left'>List of Actions that used to draw the buttons:</p>\r\n\t\t\t\t\t\t<ul style='text-align: left'>\r\n\t\t\t\t\t\t\t<li><b>label</b> The default text label that appears on the button. It is recommended to keep this short. Note that depending on font and font size, long labels may be displayed inappropriately.</li>\r\n\t\t\t\t\t\t\t<li><b>url</b> The URL to which the button leads.</li>\r\n\t\t\t\t\t\t\t<li><b>metadataField</b> The metadata field that the URL to which the button leads is taken from. If this is kept empty, or the metadata field is empty, the default URL will be used.</li>\r\n\t\t\t\t\t\t</ul>",
         "initvalue": {

@@ -4,7 +4,10 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 
 	defaultConfig: {
 		displayOnRelated: true,
+		title: "Actions buttons",
+		titleMetadataField: "",
 		displayTime: "end",
+		displayTimeMetadataField: "",
 		openInNewWindow: true,
 		styles: {
 			"bgColor": "#432ae7",
@@ -35,6 +38,8 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 		// Handle custom configuration from entry custom data
 		this.bind('KalturaSupport_EntryDataReady', $.proxy(function () {
 			this.setActionsConfiguration();
+			this.setMetadataTriggerAndTitle();
+			this.bindDisplayTrigger();
 		}, this));
 
 		// Handle button styles for cta screen
@@ -64,7 +69,9 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 				}
 			}, this));
 		}
+	},
 
+	bindDisplayTrigger: function () {
 		// Handle screen display timing
 		if ( this.getConfig('displayTime' ) == "end") {
 			this.bind('onEndedDone', $.proxy(function(){
@@ -97,11 +104,26 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 		if ( this.getPlayer().getFlashvars()["actions"] ){
 			this.setConfig('actions', this.getPlayer().getFlashvars().actions)
 		} else if ( this.getPlayer().kalturaEntryMetaData ) {
-			this.setMetadataConfig();
+			this.setMetadataActions();
 		}
 	},
 
-	setMetadataConfig: function() {
+	setMetadataTriggerAndTitle: function () {
+		var objFlashvars = {
+			"title": this.getConfig("titleMetadataField"),
+			"displayTime": this.getConfig("displayTimeMetadataField")
+		};
+
+		$.each(objFlashvars, $.proxy(function (key, val) {
+			if ( val && this.getPlayer().kalturaEntryMetaData &&
+				this.getPlayer().kalturaEntryMetaData[val] ) {
+
+				this.setConfig(key, this.getPlayer().kalturaEntryMetaData[val])
+			}
+		}, this));
+	},
+
+	setMetadataActions: function() {
 		// Check if the entry has custom configuration
 		var customConfig = this.getPlayer().kalturaEntryMetaData;
 		var actions = this.getConfig('actions');
@@ -119,7 +141,8 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 
 	getTemplateData: function() {
 		return {
-			actions: this.getConfig('actions')
+			actions: this.getConfig('actions'),
+			title: this.getConfig('title')
 		};
 	},
 
