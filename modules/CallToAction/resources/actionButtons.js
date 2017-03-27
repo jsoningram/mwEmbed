@@ -32,6 +32,7 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 		},
 		templatePath: '../CallToAction/templates/action-buttons.tmpl.html'
 	},
+	actionsDisplayed: false,
 
 	setup: function() {
 
@@ -80,8 +81,14 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 				}
 			}, this));
 		} else {
-			this.bind('timeupdate', $.proxy(function(){
-				if( Math.floor(this.getPlayer().currentTime) == this.getConfig('displayTime') ){
+			this.bind('monitorEvent' + this.bindPostFix, $.proxy(function (a, b) {
+				if ( this.actionsDisplayed ) {
+					this.getPlayer().unbindHelper( this.bindPostFix );
+					return;
+				}
+
+				if ( this.getPlayer().currentTime >= this.getConfig('displayTime') ) {
+					this.actionsDisplayed = true;
 					this.showScreen();
 				}
 			}, this));
@@ -146,11 +153,11 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 		};
 	},
 
-	gotoAction: function(e, data) {
-		var $a = $(e.target),
-			data = {
-				label: $a.text(),
-				url: $a.attr('href')
+	gotoAction: function(e) {
+		var action = $(e.target);
+		var data = {
+				label: action.text(),
+				url: action.attr('href')
 			};
 
 		// Trigger event for 3rd party plugins
