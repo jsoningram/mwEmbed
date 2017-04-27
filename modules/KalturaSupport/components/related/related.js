@@ -88,6 +88,9 @@
 				});
 			}
 
+			this.bind('showRelated', function(){
+                _this.showScreen(true);
+			});
 			this.bind('replayEvent preSequence', function(){
 				_this.stopTimer();
 			});

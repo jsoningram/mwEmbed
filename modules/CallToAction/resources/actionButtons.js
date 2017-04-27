@@ -36,6 +36,14 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 
 	setup: function() {
 
+		if(this.getConfig("templatePath").indexOf("related")>0){
+            this.setConfig("displayOnRelated",true);
+            if(this.getPlayer().evaluate("{related}")){
+            	this.getPlayer().evaluate("{related}").itemsLimit = 5; //TODO implement in a better way
+			}
+		}
+
+        this.showedMidRelated = false;
 		// Handle custom configuration from entry custom data
 		this.bind('KalturaSupport_EntryDataReady', $.proxy(function () {
 			this.setActionsConfiguration();
@@ -55,6 +63,7 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 
 		// Check if we should add cta to related
 		if ( this.getConfig('displayOnRelated') ) {
+
 			this.bind('showScreen', $.proxy(function(e, screenPluginName){
 				if( screenPluginName === 'related' ) {
 					var $spans = this.getPlayer().getVideoHolder()
@@ -74,7 +83,9 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 
 	bindDisplayTrigger: function () {
 		// Handle screen display timing
+		var _this = this;
 		if ( this.getConfig('displayTime' ) == "end") {
+            this.showedMidRelated = false;
 			this.bind('onEndedDone', $.proxy(function(){
 				if (!this.getConfig('displayOnRelated')) {
 					this.showScreen();
@@ -87,7 +98,13 @@ mw.PluginManager.add( 'actionButtons', mw.KBaseScreen.extend({
 					return;
 				}
 
-				if ( this.getPlayer().currentTime >= this.getConfig('displayTime') ) {
+				if ( this.getPlayer().currentTime >= this.getConfig('displayTime') && !_this.showedMidRelated ) {
+					_this.showedMidRelated = true;
+					if(_this.getConfig("displayOnRelated")){
+                     	_this.getPlayer().triggerHelper('showRelated');
+                     	return;
+					}
+
 					this.actionsDisplayed = true;
 					this.showScreen();
 				}

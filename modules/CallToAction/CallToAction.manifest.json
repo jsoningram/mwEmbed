@@ -2,15 +2,29 @@
   "actionButtons": {
     "description": "Call to Action plugin that allow you to show buttons on the player.",
     "attributes": {
-      "displayOnRelated": {
-        "doc": "Show the plugin with related screen",
-        "type": "boolean",
-        "initvalue": "false"
+      "templatePath": {
+        "doc": "Where to see the buttons. If selected with related, make sure to add the related feature",
+        "type": "enum",
+        "enum": [
+          "../CallToAction/templates/action-buttons.tmpl.html",
+          "../CallToAction/templates/action-button-related.tmpl.html "
+        ],
+        "initvalue": "../CallToAction/templates/action-buttons.tmpl.html",
+        "options": [
+          {
+            "label": "Display as Standalone Screen",
+            "value": "../CallToAction/templates/action-buttons.tmpl.html"
+          },
+          {
+            "label": "Display with Related Screen",
+            "value": "../CallToAction/templates/action-button-related.tmpl.html"
+          }
+        ]
       },
       "openInNewWindow": {
         "doc": "Links should open in new screen",
         "type": "boolean",
-        "initvalue": "true"
+        "initvalue": true
       },
       "displayTime": {
         "doc": "When to display the cta screen. \"end\" will display at the video end, or you can set time in seconds",
@@ -60,25 +74,6 @@
           "fontFamily": "Arial, Roboto, Arial Unicode Ms, Helvetica, Verdana, PT Sans Caption, sans-serif"
         },
         "type": "json"
-      },
-      "templatePath": {
-        "doc": "Which pre-defined template to use",
-        "type": "enum",
-        "enum": [
-          "../CallToAction/templates/action-buttons.tmpl.html",
-          "../CallToAction/templates/action-button-related.tmpl.html "
-        ],
-        "initvalue": "../CallToAction/templates/action-buttons.tmpl.html",
-        "options": [
-          {
-            "label": "Action Button Standalone Screen",
-            "value": "../CallToAction/templates/action-buttons.tmpl.html"
-          },
-          {
-            "label": "Action Button in Related Screen",
-            "value": "../CallToAction/templates/action-button-related.tmpl.html"
-          }
-        ]
       }
     }
   },

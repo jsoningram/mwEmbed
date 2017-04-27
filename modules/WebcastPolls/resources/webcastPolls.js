@@ -15,6 +15,7 @@
         configuration: {}, // ## Should remain empty (filled by 'resetPersistData')
         userVote: {}, // ## Should remain empty (filled by 'resetPersistData')
         pollData: {}, // ## Should remain empty (filled by 'resetPersistData')
+        polls_MetadataProfileSystemName: "Kaltura-polls",
         /* stores all the information that doesn't relate directly to the poll currently selected */
         globals : {
             pollsContentMapping : {}, // stores the polls questions/answers - resetting this object during ChangeMedia event
@@ -41,11 +42,50 @@
                 pollResults: null
             };
         },
+        getMetaDataProfile:function() {
+            var _this=this;
+
+            var listMetadataProfileRequest = {
+                service: "metadata_metadataprofile",
+                action: "list",
+                "filter:systemNameEqual": this.polls_MetadataProfileSystemName
+            };
+            // this.userId=this.qnaPlugin.getUserID(); TODO ? do I need this?
+
+
+            var deferred = $.Deferred();
+            this.getKClient().doRequest(listMetadataProfileRequest, function (result) {
+
+                if (result.objectType==="KalturaAPIException") {
+                    mw.log("Error getting metadata profile: "+result.message+" ("+result.code+")");
+                    deferred.resolve(false);
+                    return;
+                }
+
+                _this.metadataProfile = result.objects[0];
+                deferred.resolve(true);
+            });
+            return deferred;
+        },
         /**
          * Bootstrap the plugin upon player loading.
          */
         setup: function () {
             var _this = this;
+
+
+            this.kPushServerNotification= mw.KPushServerNotification.getInstance(this.embedPlayer);
+            if (_this.embedPlayer.isLive()) {
+                //we first register to all notification before continue to get the existing cuepoints, so we don't get races and lost cue points
+                _this.getMetaDataProfile().then(function() {
+                    _this.registerNotifications().then(function() {
+                        mw.log("Polls successful  registerNotifications");
+                    },function(err) {
+                        mw.log("polls failed  registerNotifications ",err);
+                    });
+                });
+            }
+
 
             // reset parameters
             _this.resetPersistData();
